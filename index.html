@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chanakya ERP - Complete Institute Management</title>
+<style>
+:root{--p:#4f46e5;--pd:#4338ca;--bg:#f3f4f6;--sf:#fff;--tx:#1f2937;--tl:#6b7280;--bd:#e5e7eb;--ok:#10b981;--wn:#f59e0b;--no:#ef4444;--pr:#8b5cf6;--info:#3b82f6}
+[data-theme="dark"]{--bg:#0f172a;--sf:#1e293b;--tx:#f1f5f9;--tl:#94a3b8;--bd:#334155}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif}
+body{background:linear-gradient(135deg,var(--p),var(--pr));min-height:100vh}
+
+.auth-wrap{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}
+.auth-box{background:var(--sf);padding:35px;border-radius:20px;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.auth-box h1{text-align:center;color:var(--p);font-size:26px;margin-bottom:5px}
+.auth-box .sub{text-align:center;color:var(--tl);font-size:13px;margin-bottom:22px}
+.panel-select{display:flex;gap:8px;margin-bottom:18px}
+.panel-btn{flex:1;padding:12px;border:2px solid var(--bd);border-radius:10px;background:var(--bg);cursor:pointer;font-weight:600;color:var(--tx);transition:0.3s;font-size:13px}
+.panel-btn.active{border-color:var(--p);background:var(--p);color:#fff}
+.fg{margin-bottom:13px}
+.fg label{display:block;font-size:12px;font-weight:600;margin-bottom:4px;color:var(--tx)}
+.fc{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font-size:13px}
+.fc:focus{border-color:var(--p);outline:none}
+.btn-p{width:100%;padding:12px;background:var(--p);color:#fff;border:none;border-radius:10px;font-weight:600;font-size:14px;cursor:pointer}
+.link{color:var(--p);cursor:pointer;font-size:12px;text-align:center;margin-top:10px;display:block}
+
+#mainApp{display:none;min-height:100vh;background:var(--bg)}
+body.app-mode{background:var(--bg)}
+.topbar{background:var(--sf);padding:10px 18px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 2px 8px rgba(0,0,0,0.1);position:sticky;top:0;z-index:50}
+.top-left{display:flex;align-items:center;gap:10px}
+.menu-btn{font-size:22px;background:none;border:none;cursor:pointer;color:var(--tx)}
+.logo-text h2{font-size:16px;color:var(--p)}
+.logo-text p{font-size:10px;color:var(--tl)}
+.top-right{display:flex;align-items:center;gap:8px}
+.icon-btn{background:var(--bg);width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:15px;border:none;cursor:pointer;position:relative}
+.badge-count{position:absolute;top:-3px;right:-3px;background:var(--no);color:#fff;font-size:9px;font-weight:bold;width:17px;height:17px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.user-profile{display:flex;align-items:center;gap:8px;cursor:pointer}
+.avatar{width:36px;height:36px;background:var(--p);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:14px}
+.user-info .name{font-size:12px;font-weight:600}
+.user-info .role{font-size:10px;color:var(--tl)}
+
+.app-body{display:flex;min-height:calc(100vh - 60px)}
+.sidebar{width:240px;background:var(--sf);border-right:1px solid var(--bd);position:fixed;left:0;top:60px;bottom:0;overflow-y:auto;z-index:40;transform:translateX(-100%);transition:transform 0.3s}
+.sidebar.open{transform:translateX(0)}
+.nav-sec{padding:10px 16px 3px;font-size:10px;font-weight:700;color:var(--tl);text-transform:uppercase}
+.nav-item{padding:10px 16px;display:flex;align-items:center;gap:10px;color:var(--tx);font-size:13px;cursor:pointer;border-left:3px solid transparent}
+.nav-item:hover{background:var(--bg)}
+.nav-item.active{background:rgba(79,70,229,0.1);color:var(--p);border-left-color:var(--p)}
+.nav-item .ic{font-size:16px;width:20px;text-align:center}
+.main-content{flex:1;padding:18px;margin-left:0;overflow-y:auto}
+@media(min-width:768px){.sidebar{transform:translateX(0)}.main-content{margin-left:240px}}
+
+.welcome{background:linear-gradient(135deg,var(--p),var(--pr));color:#fff;padding:22px;border-radius:12px;margin-bottom:18px}
+.welcome h1{font-size:20px;margin-bottom:5px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:18px}
+.stat{background:var(--sf);padding:16px;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border-top:4px solid var(--p)}
+.stat h3{font-size:10px;color:var(--tl);text-transform:uppercase;margin-bottom:5px}
+.stat .v{font-size:22px;font-weight:800;color:var(--tx)}
+.stat.green{border-top-color:var(--ok)}
+.stat.orange{border-top-color:var(--wn)}
+.stat.red{border-top-color:var(--no)}
+.stat.purple{border-top-color:var(--pr)}
+.card{background:var(--sf);border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.08);margin-bottom:16px}
+.card-h{padding:13px 16px;border-bottom:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.card-h h2{font-size:14px}
+.card-b{padding:16px}
+.btn{padding:8px 16px;border:none;border-radius:7px;font-weight:600;cursor:pointer;font-size:12px;display:inline-flex;align-items:center;gap:4px}
+.btn-p{background:var(--p);color:#fff}
+.btn-ok{background:var(--ok);color:#fff}
+.btn-wn{background:var(--wn);color:#fff}
+.btn-no{background:var(--no);color:#fff}
+.btn-sm{padding:4px 9px;font-size:11px}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.qbtn{padding:18px 12px;border-radius:10px;color:#fff;font-weight:600;text-align:center;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;min-height:90px;font-size:12px}
+.qbtn .ic{font-size:26px}
+
+table{width:100%;border-collapse:collapse}
+th,td{padding:9px;text-align:left;border-bottom:1px solid var(--bd);font-size:12px}
+th{background:var(--bg);font-weight:600;color:var(--tl);text-transform:uppercase;font-size:10px}
+.badge{padding:3px 8px;border-radius:10px;font-size:10px;font-weight:700}
+.b-ok{background:#d1fae5;color:#065f46}
+.b-wn{background:#fef3c7;color:#92400e}
+.b-no{background:#fee2e2;color:#991b1b}
+
+.toast{position:fixed;top:12px;right:12px;background:var(--sf);padding:11px 18px;border-radius:9px;box-shadow:0 5px 20px rgba(0,0,0,0.2);z-index:9999;display:none;border-left:4px solid var(--ok);font-size:12px}
+.toast.show{display:block;animation:slide 0.3s}
+.toast.err{border-left-color:var(--no)}
+@keyframes slide{from{transform:translateX(100%)}to{transform:translateX(0)}}
+
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;padding:12px}
+.modal.show{display:flex}
+.modal-box{background:var(--sf);padding:20px;border-radius:12px;max-width:480px;width:100%;max-height:90vh;overflow-y:auto}
+.modal-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.close-btn{background:none;border:none;font-size:20px;cursor:pointer}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:600px){.frow{grid-template-columns:1fr}}
+
+.empty{text-align:center;padding:25px;color:var(--tl)}
+.empty .ic{font-size:35px;margin-bottom:6px;opacity:0.5}
+
+.id-card{width:300px;background:linear-gradient(135deg,var(--p),var(--pr));color:#fff;padding:18px;border-radius:10px;margin:0 auto;text-align:center}
+.id-card .photo{width:70px;height:70px;background:#fff;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:28px;color:var(--p);font-weight:bold}
+.id-card h3{margin-bottom:4px;font-size:16px}
+.id-card p{font-size:11px;opacity:0.9}
+.id-card .details{background:rgba(255,255,255,0.2);padding:8px;border-radius:7px;margin-top:8px;text-align:left;font-size:11px}
+.id-card .details div{margin:3px 0}
+
+.receipt{background:#fff;padding:18px;border:2px dashed var(--bd);border-radius:9px;max-width:380px;margin:0 auto}
+.receipt h3{text-align:center;color:var(--p);margin-bottom:8px;font-size:16px}
+.receipt .row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--bd);font-size:12px}
+.receipt .total{font-weight:bold;font-size:14px;color:var(--p)}
+
+.certificate{background:#fff;padding:25px;border:3px double var(--p);border-radius:9px;text-align:center;max-width:480px;margin:0 auto}
+.certificate h2{color:var(--p);margin-bottom:8px;font-size:20px}
+.certificate .name{font-size:22px;color:var(--tx);margin:12px 0;font-weight:bold}
+.certificate p{margin:6px 0;color:var(--tl);font-size:13px}
+
+.notice-item{background:var(--bg);padding:10px;border-radius:7px;margin-bottom:8px;border-left:4px solid var(--p)}
+.notice-item.urgent{border-left-color:var(--no)}
+.notice-item h4{margin-bottom:3px;font-size:13px}
+.notice-item p{font-size:11px;color:var(--tl)}
+
+.tt-grid{display:grid;grid-template-columns:90px repeat(5,1fr);gap:4px}
+.tt-cell{background:var(--bg);padding:6px;border-radius:5px;text-align:center;font-size:10px}
+.tt-cell.header{background:var(--p);color:#fff;font-weight:600}
+.tt-cell.time{background:var(--wn);color:#fff;font-weight:600}
+
+.book-item{display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg);border-radius:7px;margin-bottom:6px}
+.book-icon{font-size:26px}
+.book-info{flex:1}
+.book-info h4{font-size:13px;margin-bottom:2px}
+.book-info p{font-size:10px;color:var(--tl)}
+
+.log-item{padding:8px;border-bottom:1px solid var(--bd);font-size:11px}
+.log-item .t{font-weight:600;color:var(--tx)}
+.log-item .d{color:var(--tl);font-size:10px;margin-top:2px}
+
+@media print{
+  .topbar,.sidebar,.btn,.menu-btn{display:none!important}
+  .main-content{margin-left:0!important}
+  .id-card,.receipt,.certificate{box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<div id="authScreen" class="auth-wrap">
+  <div class="auth-box">
+    <h1>🎓 Chanakya ERP</h1>
+    <p class="sub">Complete Institute Management System</p>
+    <div class="panel-select">
+      <button class="panel-btn active" onclick="selectPanel('admin')" id="btnAdmin">‍💼 Admin Panel</button>
+      <button class="panel-btn" onclick="selectPanel('student')" id="btnStudent">👨🎓 Student Panel</button>
+    </div>
+    <div id="instReg" style="display:none">
+      <h3 style="margin-bottom:10px;color:var(--p)"> Institute Registration</h3>
+      <div class="fg"><label>🏫 Institute Name *</label><input type="text" id="instName" class="fc"></div>
+      <div class="fg"><label>👤 Admin Name *</label><input type="text" id="adminName" class="fc"></div>
+      <div class="fg"><label>📱 Mobile *</label><input type="text" id="instMob" class="fc" maxlength="10"></div>
+      <div class="fg"><label>📧 Email</label><input type="email" id="instEmail" class="fc"></div>
+      <div class="fg"><label>📍 Address</label><input type="text" id="instAddr" class="fc"></div>
+      <div class="fg"><label> Username *</label><input type="text" id="regUser" class="fc"></div>
+      <div class="fg"><label>🔒 Password *</label><input type="password" id="regPass" class="fc"></div>
+      <button class="btn-p" onclick="registerInstitute()">✅ Register Institute</button>
+      <span class="link" onclick="backToAdminLogin()">← Back to Login</span>
+    </div>
+    <div id="adminLogin">
+      <div class="fg"><label>👤 Username</label><input type="text" id="aUser" class="fc" placeholder="Enter username"></div>
+      <div class="fg"><label>🔒 Password</label><input type="password" id="aPass" class="fc" placeholder="Enter password"></div>
+      <button class="btn-p" onclick="adminLogin()">🚀 Login</button>
+      <span class="link" onclick="showInstReg()"> New Institute? Register Here</span>
+    </div>
+    <div id="studentLogin" style="display:none">
+      <div class="fg"><label>🏫 Select Institute</label><select id="stuInst" class="fc"></select></div>
+      <div class="fg"><label>🆔 Student ID</label><input type="text" id="sId" class="fc" placeholder="e.g. STU001"></div>
+      <div class="fg"><label>📱 Mobile Number</label><input type="text" id="sMob" class="fc" placeholder="Enter mobile"></div>
+      <button class="btn-p" style="background:var(--ok)" onclick="studentLogin()">🚀 Login</button>
+      <p style="text-align:center;margin-top:10px;font-size:11px;color:var(--tl)">📞 Contact your institute admin for Student ID</p>
+    </div>
+  </div>
+</div>
+
+<div id="mainApp">
+  <div class="topbar">
+    <div class="top-left">
+      <button class="menu-btn" onclick="togSide()">☰</button>
+      <div class="logo-text">
+        <h2 id="instNameDisplay">Institute</h2>
+        <p id="panelType">Panel</p>
+      </div>
+    </div>
+    <div class="top-right">
+      <button class="icon-btn" onclick="togTheme()" id="themeBtn">🌙</button>
+      <button class="icon-btn" onclick="showNotifs()" id="notifBtn">🔔<span class="badge-count" id="notifCount">0</span></button>
+      <div class="user-profile" onclick="showProfile()">
+        <div class="user-info">
+          <div class="name" id="uName">User</div>
+          <div class="role" id="uRole">Role</div>
+        </div>
+        <div class="avatar" id="uAvatar">U</div>
+      </div>
+    </div>
+  </div>
+  <div class="app-body">
+    <div class="sidebar" id="sidebar"></div>
+    <div class="main-content" id="content"></div>
+  </div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-h">
+      <h3 id="modalTitle">Title</h3>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DB={
+  instId:null,
+  setInst:function(id){this.instId=id},
+  get:function(k){try{return JSON.parse(localStorage.getItem('inst_'+this.instId+'_'+k))||[]}catch(e){return []}},
+  set:function(k,v){localStorage.setItem('inst_'+this.instId+'_'+k,JSON.stringify(v))},
+  getO:function(k){try{return JSON.parse(localStorage.getItem('inst_'+this.instId+'_'+k))||{}}catch(e){return {}}},
+  setO:function(k,v){localStorage.setItem('inst_'+this.instId+'_'+k,JSON.stringify(v))}
+};
+const INST={
+  get:function(){try{return JSON.parse(localStorage.getItem('cci_institutes'))||[]}catch(e){return []}},
+  set:function(v){localStorage.setItem('cci_institutes',JSON.stringify(v))}
+};
+
+let currentUser=null,currentPanel='admin',dark=false;
+
+function toast(m,e){var t=document.getElementById('toast');t.textContent=m;t.className='toast show'+(e?' err':'');setTimeout(function(){t.className='toast'},3000)}
+function selectPanel(panel){
+  currentPanel=panel;
+  document.getElementById('btnAdmin').classList.toggle('active',panel==='admin');
+  document.getElementById('btnStudent').classList.toggle('active',panel==='student');
+  document.getElementById('instReg').style.display='none';
+  document.getElementById('adminLogin').style.display='none';
+  document.getElementById('studentLogin').style.display='none';
+  if(panel==='admin')document.getElementById('adminLogin').style.display='block';
+  else{document.getElementById('studentLogin').style.display='block';loadInstitutesForStudent();}
+}
+function loadInstitutesForStudent(){
+  var insts=INST.get(),sel=document.getElementById('stuInst');
+  sel.innerHTML='<option value="">-- Select Institute --</option>';
+  insts.forEach(function(i){sel.innerHTML+='<option value="'+i.id+'">'+i.name+'</option>'});
+}
+function showInstReg(){document.getElementById('instReg').style.display='block';document.getElementById('adminLogin').style.display='none'}
+function backToAdminLogin(){document.getElementById('instReg').style.display='none';document.getElementById('adminLogin').style.display='block'}
+
+function registerInstitute(){
+  var name=document.getElementById('instName').value.trim(),adminName=document.getElementById('adminName').value.trim(),mob=document.getElementById('instMob').value.trim(),email=document.getElementById('instEmail').value.trim(),addr=document.getElementById('instAddr').value.trim(),user=document.getElementById('regUser').value.trim(),pass=document.getElementById('regPass').value;
+  if(!name||!adminName||!mob||!user||!pass){toast('Fill all required fields!',true);return}
+  if(mob.length!==10){toast('Mobile must be 10 digits!',true);return}
+  if(pass.length<4){toast('Password min 4 chars!',true);return}
+  var insts=INST.get();
+  if(insts.find(function(i){return i.adminUser===user})){toast('Username already taken!',true);return}
+  var instId='INST'+Date.now();
+  insts.push({id:instId,name:name,adminName:adminName,mob:mob,email:email,address:addr,adminUser:user,adminPass:pass,registeredDate:new Date().toLocaleDateString()});
+  INST.set(insts);
+  DB.setInst(instId);
+  DB.set('students',[]);DB.set('courses',[]);DB.set('fees',[]);DB.set('attendance',[]);DB.set('exams',[]);DB.set('expenses',[]);DB.set('notifications',[]);DB.set('notices',[]);DB.set('library',[]);DB.set('timetable',[]);DB.set('certificates',[]);DB.set('logs',[]);DB.set('staff',[]);
+  DB.setO('settings',{name:name,phone:mob,email:email,address:addr});
+  toast('✅ Institute registered! ID: '+instId);
+  backToAdminLogin();
+  document.getElementById('aUser').value=user;
+}
+
+function adminLogin(){
+  var u=document.getElementById('aUser').value.trim(),p=document.getElementById('aPass').value;
+  if(!u||!p){toast('Fill all fields!',true);return}
+  var insts=INST.get(),inst=insts.find(function(i){return i.adminUser===u&&i.adminPass===p});
+  if(inst){
+    DB.setInst(inst.id);
+    currentUser={name:inst.adminName,role:'ADMIN',user:u,instId:inst.id,instName:inst.name};
+    document.getElementById('instNameDisplay').textContent=inst.name;
+    enterApp('admin');toast('Welcome, '+inst.adminName+'!');
+  }else{toast('Invalid credentials!',true)}
+}
+
+function studentLogin(){
+  var instId=document.getElementById('stuInst').value,id=document.getElementById('sId').value.toUpperCase().trim(),mob=document.getElementById('sMob').value.trim();
+  if(!instId){toast('Select institute!',true);return}
+  if(!id||!mob){toast('Fill all fields!',true);return}
+  DB.setInst(instId);
+  var students=DB.get('students'),s=students.find(function(x){return x.id===id&&x.mob===mob});
+  if(s){
+    var insts=INST.get(),inst=insts.find(function(i){return i.id===instId});
+    currentUser={name:s.name,role:'STUDENT',id:s.id,mob:s.mob,course:s.cou,instId:instId,instName:inst?inst.name:''};
+    document.getElementById('instNameDisplay').textContent=inst?inst.name:'';
+    enterApp('student');toast('Welcome, '+s.name+'!');
+  }else{toast('Invalid Student ID or Mobile!',true)}
+}
+
+function enterApp(panel){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  document.body.classList.add('app-mode');
+  document.getElementById('panelType').textContent=panel==='admin'?'Admin Panel':'Student Panel';
+  document.getElementById('uName').textContent=currentUser.name;
+  document.getElementById('uRole').textContent=currentUser.role;
+  document.getElementById('uAvatar').textContent=currentUser.name.charAt(0).toUpperCase();
+  if(panel==='admin'){renderAdminSidebar();renderAdminDashboard()}
+  else{renderStudentSidebar();renderStudentDashboard()}
+  updateNotifCount();
+}
+function togSide(){document.getElementById('sidebar').classList.toggle('open')}
+function togTheme(){dark=!dark;document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.getElementById('themeBtn').textContent=dark?'☀️':''}
+function closeModal(){document.getElementById('modal').classList.remove('show')}
+function openModal(t,h){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').innerHTML=h;document.getElementById('modal').classList.add('show')}
+function updateNotifCount(){if(!currentUser)return;document.getElementById('notifCount').textContent=DB.get('notifications').length}
+
+function addLog(action,details){var logs=DB.get('logs');logs.unshift({action:action,details:details||'',time:new Date().toLocaleString(),user:currentUser?currentUser.name:'System'});if(logs.length>100)logs.length=100;DB.set('logs',logs)}
+
+/* ============ ADMIN SIDEBAR ============ */
+function renderAdminSidebar(){
+  var h='<div class="nav-sec">🏠 MAIN</div>';
+  h+='<div class="nav-item active" onclick="renderAdminDashboard()"><span class="ic"></span>Dashboard</div>';
+  h+='<div class="nav-sec">👥 MANAGEMENT</div>';
+  h+='<div class="nav-item" onclick="renderAdminStudents()"><span class="ic">👨‍🎓</span>Students</div>';
+  h+='<div class="nav-item" onclick="renderAdminCourses()"><span class="ic">📚</span>Courses</div>';
+  h+='<div class="nav-item" onclick="renderAdminStaff()"><span class="ic">👨‍🏫</span>Staff</div>';
+  h+='<div class="nav-sec">🎓 ACADEMIC</div>';
+  h+='<div class="nav-item" onclick="renderAdminAttendance()"><span class="ic"></span>Attendance</div>';
+  h+='<div class="nav-item" onclick="renderAdminExams()"><span class="ic">📝</span>Exams</div>';
+  h+='<div class="nav-item" onclick="renderAdminTimetable()"><span class="ic">🗓️</span>Timetable</div>';
+  h+='<div class="nav-sec">💰 FINANCE</div>';
+  h+='<div class="nav-item" onclick="renderAdminFees()"><span class="ic">💵</span>Fees</div>';
+  h+='<div class="nav-item" onclick="renderAdminExpenses()"><span class="ic">📉</span>Expenses</div>';
+  h+='<div class="nav-sec">📚 LIBRARY</div>';
+  h+='<div class="nav-item" onclick="renderAdminLibrary()"><span class="ic">📖</span>Library</div>';
+  h+='<div class="nav-sec">📢 COMMUNICATION</div>';
+  h+='<div class="nav-item" onclick="renderAdminNotices()"><span class="ic">📢</span>Notices</div>';
+  h+='<div class="nav-item" onclick="renderAdminAlerts()"><span class="ic">🔔</span>Alerts</div>';
+  h+='<div class="nav-sec">🎨 GENERATORS</div>';
+  h+='<div class="nav-item" onclick="renderAdminIdCards()"><span class="ic">🪪</span>ID Cards</div>';
+  h+='<div class="nav-item" onclick="renderAdminReceipts()"><span class="ic">🧾</span>Receipts</div>';
+  h+='<div class="nav-item" onclick="renderAdminCertificates()"><span class="ic">🎓</span>Certificates</div>';
+  h+='<div class="nav-sec">📊 REPORTS</div>';
+  h+='<div class="nav-item" onclick="renderAdminReports()"><span class="ic"></span>Reports</div>';
+  h+='<div class="nav-item" onclick="renderAdminLogs()"><span class="ic">📋</span>Audit Logs</div>';
+  h+='<div class="nav-sec">⚙️ SYSTEM</div>';
+  h+='<div class="nav-item" onclick="renderAdminSettings()"><span class="ic">⚙️</span>Settings</div>';
+  h+='<div class="nav-item" onclick="renderAdminBackup()"><span class="ic">💾</span>Backup</div>';
+  h+='<div class="nav-item" onclick="logout()" style="color:var(--no)"><span class="ic">🚪</span>Logout</div>';
+  document.getElementById('sidebar').innerHTML=h;
+}
+
+function renderAdminDashboard(){
+  var stu=DB.get('students'),cou=DB.get('courses'),fee=DB.get('fees'),exp=DB.get('expenses');
+  var tot=fee.reduce(function(s,f){return s+f.amt},0),totExp=exp.reduce(function(s,e){return s+e.amt},0),pend=stu.reduce(function(s,x){return s+(x.pen||0)},0);
+  var h='<div class="welcome"><h1>👋 Welcome, '+currentUser.name+'!</h1><p>'+currentUser.instName+' - Admin Dashboard</p></div>';
+  h+='<div class="stats">';
+  h+='<div class="stat"><h3>👨‍🎓 Students</h3><div class="v">'+stu.length+'</div></div>';
+  h+='<div class="stat green"><h3>📚 Courses</h3><div class="v">'+cou.length+'</div></div>';
+  h+='<div class="stat orange"><h3>💰 Collection</h3><div class="v">₹'+tot.toLocaleString()+'</div></div>';
+  h+='<div class="stat red"><h3>⏳ Pending</h3><div class="v">₹'+pend.toLocaleString()+'</div></div>';
+  h+='<div class="stat purple"><h3> Expenses</h3><div class="v">₹'+totExp.toLocaleString()+'</div></div>';
+  h+='<div class="stat"><h3>💹 Profit</h3><div class="v">₹'+(tot-totExp).toLocaleString()+'</div></div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-h"><h2> Quick Actions</h2></div><div class="card-b"><div class="qgrid">';
+  h+='<div class="qbtn" style="background:var(--p)" onclick="openAddStudent()"><div class="ic">➕</div>Add Student</div>';
+  h+='<div class="qbtn" style="background:var(--ok)" onclick="openCollectFee()"><div class="ic">💵</div>Collect Fee</div>';
+  h+='<div class="qbtn" style="background:var(--wn)" onclick="openAddCourse()"><div class="ic">📚</div>Add Course</div>';
+  h+='<div class="qbtn" style="background:var(--pr)" onclick="markAtt()"><div class="ic">📅</div>Attendance</div>';
+  h+='<div class="qbtn" style="background:var(--no)" onclick="openAddExp()"><div class="ic">📉</div>Add Expense</div>';
+  h+='<div class="qbtn" style="background:var(--info)" onclick="openAddNotice()"><div class="ic">📢</div>Add Notice</div>';
+  h+='<div class="qbtn" style="background:#06b6d4" onclick="renderAdminIdCards()"><div class="ic"></div>ID Cards</div>';
+  h+='<div class="qbtn" style="background:#ec4899" onclick="renderAdminReports()"><div class="ic">📈</div>Reports</div>';
+  h+='</div></div></div>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function renderAdminStudents(){
+  var stu=DB.get('students');
+  var h='<h2 style="margin-bottom:12px">👨‍🎓 Students ('+stu.length+')</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddStudent()">➕ Add Student</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(stu.length===0)h+='<div class="empty"><div class="ic">👨🎓</div><p>No students yet</p></div>';
+  else{
+    h+='<table><thead><tr><th>ID</th><th>Name</th><th>Mobile</th><th>Course</th><th>Fee</th><th>Paid</th><th>Pending</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+    stu.forEach(function(s){
+      h+='<tr><td><b>'+s.id+'</b></td><td>'+s.name+'</td><td>'+s.mob+'</td><td>'+s.cou+'</td><td>₹'+s.fee+'</td><td>₹'+s.paid+'</td><td>₹'+s.pen+'</td><td>'+(s.pen===0?'<span class="badge b-ok">Paid</span>':'<span class="badge b-wn">Pending</span>')+'</td><td><button class="btn btn-wn btn-sm" onclick="editStudent(\''+s.id+'\')">✏️</button> <button class="btn btn-no btn-sm" onclick="delStudent(\''+s.id+'\')">🗑️</button></td></tr>';
+    });
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+
+function openAddStudent(){
+  var cou=DB.get('courses');
+  if(cou.length===0){toast('Add courses first!',true);return}
+  var opts='';cou.forEach(function(c){opts+='<option value="'+c.name+'" data-fee="'+c.fee+'">'+c.name+' (₹'+c.fee+')</option>'});
+  var h='<div class="frow"><div class="fg"><label>👤 Full Name *</label><input type="text" id="stName" class="fc"></div>';
+  h+='<div class="fg"><label>📱 Mobile *</label><input type="text" id="stMob" class="fc" maxlength="10"></div></div>';
+  h+='<div class="fg"><label>👨 Father Name</label><input type="text" id="stFather" class="fc"></div>';
+  h+='<div class="fg"><label>📱 Father Mobile</label><input type="text" id="stFMob" class="fc" maxlength="10"></div>';
+  h+='<div class="frow"><div class="fg"><label>📚 Course *</label><select id="stCou" class="fc" onchange="updFee()">'+opts+'</select></div>';
+  h+='<div class="fg"><label>🕐 Batch</label><input type="text" id="stBatch" class="fc" placeholder="Morning/Evening"></div></div>';
+  h+='<div class="frow"><div class="fg"><label>💰 Total Fee</label><input type="number" id="stFee" class="fc" readonly></div>';
+  h+='<div class="fg"><label>🎁 Discount</label><input type="number" id="stDis" class="fc" value="0"></div></div>';
+  h+='<div class="frow"><div class="fg"><label>✅ Paid</label><input type="number" id="stPaid" class="fc" value="0"></div>';
+  h+='<div class="fg"><label>📍 Address</label><input type="text" id="stAddr" class="fc"></div></div>';
+  h+='<button class="btn-p" onclick="saveStudent()">💾 Save Student</button>';
+  openModal('➕ Add New Student',h);updFee();
+}
+function updFee(){var s=document.getElementById('stCou');document.getElementById('stFee').value=s.options[s.selectedIndex].dataset.fee||0}
+function saveStudent(){
+  var n=document.getElementById('stName').value.trim(),m=document.getElementById('stMob').value.trim(),c=document.getElementById('stCou').value;
+  if(!n||!m||!c){toast('Fill required fields!',true);return}
+  if(m.length!==10){toast('Mobile 10 digits!',true);return}
+  var stu=DB.get('students'),id='STU'+(stu.length+1).toString().padStart(3,'0');
+  var fee=+document.getElementById('stFee').value,dis=+document.getElementById('stDis').value,paid=+document.getElementById('stPaid').value;
+  stu.push({id:id,name:n,mob:m,father:document.getElementById('stFather').value.trim(),fatherMob:document.getElementById('stFMob').value.trim(),cou:c,batch:document.getElementById('stBatch').value.trim(),fee:fee,dis:dis,paid:paid,pen:fee-dis-paid,addr:document.getElementById('stAddr').value.trim(),date:new Date().toLocaleDateString()});
+  DB.set('students',stu);addLog('Student Added','ID:'+id+' Name:'+n);
+  closeModal();toast('✅ Student added! ID: '+id);renderAdminStudents();
+}
+function editStudent(id){
+  var s=DB.get('students').find(function(x){return x.id===id});if(!s)return;
+  var h='<div class="fg"><label>ID</label><input type="text" class="fc" value="'+s.id+'" readonly></div>';
+  h+='<div class="frow"><div class="fg"><label>Name</label><input type="text" id="eName" class="fc" value="'+s.name+'"></div>';
+  h+='<div class="fg"><label>Mobile</label><input type="text" id="eMob" class="fc" value="'+s.mob+'"></div></div>';
+  h+='<div class="frow"><div class="fg"><label>Total Fee</label><input type="number" id="eFee" class="fc" value="'+s.fee+'"></div>';
+  h+='<div class="fg"><label>Paid</label><input type="number" id="ePaid" class="fc" value="'+s.paid+'"></div></div>';
+  h+='<button class="btn-p" onclick="updStudent(\''+id+'\')">💾 Update</button>';
+  openModal('️ Edit Student',h);
+}
+function updStudent(id){
+  var stu=DB.get('students'),i=stu.findIndex(function(x){return x.id===id});
+  if(i>-1){stu[i].name=document.getElementById('eName').value.trim();stu[i].mob=document.getElementById('eMob').value.trim();stu[i].fee=+document.getElementById('eFee').value;stu[i].paid=+document.getElementById('ePaid').value;stu[i].pen=stu[i].fee-stu[i].paid;DB.set('students',stu);addLog('Student Updated','ID:'+id);closeModal();toast('✅ Updated!');renderAdminStudents()}
+}
+function delStudent(id){if(!confirm('Delete this student?'))return;DB.set('students',DB.get('students').filter(function(s){return s.id!==id}));addLog('Student Deleted','ID:'+id);toast('🗑️ Deleted');renderAdminStudents()}
+
+function renderAdminCourses(){
+  var cou=DB.get('courses'),stu=DB.get('students');
+  var h='<h2 style="margin-bottom:12px">📚 Courses ('+cou.length+')</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddCourse()">➕ Add Course</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(cou.length===0)h+='<div class="empty"><div class="ic">📚</div><p>No courses yet</p></div>';
+  else{
+    h+='<table><thead><tr><th>ID</th><th>Name</th><th>Duration</th><th>Fee</th><th>Students</th><th>Actions</th></tr></thead><tbody>';
+    cou.forEach(function(c){var n=stu.filter(function(s){return s.cou===c.name}).length;h+='<tr><td><b>'+c.id+'</b></td><td>'+c.name+'</td><td>'+c.duration+'</td><td>₹'+c.fee+'</td><td><span class="badge b-ok">'+n+'</span></td><td><button class="btn btn-no btn-sm" onclick="delCourse(\''+c.id+'\')">️</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddCourse(){
+  var h='<div class="fg"><label>📖 Course Name *</label><input type="text" id="coName" class="fc"></div>';
+  h+='<div class="frow"><div class="fg"><label>⏱️ Duration</label><input type="text" id="coDur" class="fc" placeholder="3 Months"></div>';
+  h+='<div class="fg"><label>💰 Fee *</label><input type="number" id="coFee" class="fc"></div></div>';
+  h+='<div class="fg"><label>📝 Description</label><textarea id="coDesc" class="fc" rows="2"></textarea></div>';
+  h+='<button class="btn-p" onclick="saveCourse()">💾 Save</button>';
+  openModal('➕ Add Course',h);
+}
+function saveCourse(){
+  var n=document.getElementById('coName').value.trim(),f=+document.getElementById('coFee').value;
+  if(!n||!f){toast('Fill required!',true);return}
+  var cou=DB.get('courses');cou.push({id:'C'+(cou.length+1),name:n,duration:document.getElementById('coDur').value.trim(),fee:f,desc:document.getElementById('coDesc').value.trim()});
+  DB.set('courses',cou);addLog('Course Added','Name:'+n);closeModal();toast('✅ Course added!');renderAdminCourses();
+}
+function delCourse(id){if(!confirm('Delete?'))return;DB.set('courses',DB.get('courses').filter(function(c){return c.id!==id}));toast('️ Deleted');renderAdminCourses()}
+
+function renderAdminStaff(){
+  var staff=DB.get('staff');
+  var h='<h2 style="margin-bottom:12px">👨‍🏫 Staff ('+staff.length+')</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddStaff()">➕ Add Staff</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(staff.length===0)h+='<div class="empty"><div class="ic">👨‍🏫</div><p>No staff yet</p></div>';
+  else{
+    h+='<table><thead><tr><th>Name</th><th>Role</th><th>Mobile</th><th>Salary</th><th>Actions</th></tr></thead><tbody>';
+    staff.forEach(function(s){h+='<tr><td>'+s.name+'</td><td>'+s.role+'</td><td>'+s.mob+'</td><td>₹'+s.sal+'</td><td><button class="btn btn-no btn-sm" onclick="delStaff(\''+s.id+'\')">️</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddStaff(){
+  var h='<div class="fg"><label> Name *</label><input type="text" id="sfName" class="fc"></div>';
+  h+='<div class="frow"><div class="fg"><label>📱 Mobile *</label><input type="text" id="sfMob" class="fc" maxlength="10"></div>';
+  h+='<div class="fg"><label>💼 Role</label><select id="sfRole" class="fc"><option>Teacher</option><option>Accountant</option><option>Receptionist</option><option>Peon</option></select></div></div>';
+  h+='<div class="fg"><label>💰 Salary</label><input type="number" id="sfSal" class="fc"></div>';
+  h+='<button class="btn-p" onclick="saveStaff()">💾 Save</button>';
+  openModal('➕ Add Staff',h);
+}
+function saveStaff(){
+  var n=document.getElementById('sfName').value.trim(),m=document.getElementById('sfMob').value.trim();
+  if(!n||!m){toast('Fill required!',true);return}
+  var staff=DB.get('staff');staff.push({id:'S'+(staff.length+1),name:n,mob:m,role:document.getElementById('sfRole').value,sal:+document.getElementById('sfSal').value||0,date:new Date().toLocaleDateString()});
+  DB.set('staff',staff);addLog('Staff Added','Name:'+n);closeModal();toast('✅ Staff added!');renderAdminStaff();
+}
+function delStaff(id){if(!confirm('Delete?'))return;DB.set('staff',DB.get('staff').filter(function(s){return s.id!==id}));toast('🗑️ Deleted');renderAdminStaff()}
+
+function renderAdminAttendance(){
+  var stu=DB.get('students'),att=DB.get('attendance'),today=new Date().toLocaleDateString();
+  var tAtt=att.filter(function(a){return a.date===today}),pres=tAtt.filter(function(a){return a.status==='Present'}).length;
+  var h='<h2 style="margin-bottom:12px">📅 Attendance - '+today+'</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="markAtt()">📝 Mark Today</button>';
+  h+='<div class="stats" style="margin-bottom:12px">';
+  h+='<div class="stat green"><h3>✅ Present</h3><div class="v">'+pres+'</div></div>';
+  h+='<div class="stat red"><h3>❌ Absent/Late</h3><div class="v">'+(tAtt.length-pres)+'</div></div>';
+  h+='<div class="stat"><h3>📊 Total</h3><div class="v">'+tAtt.length+'</div></div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-h"><h2>Today\'s Records</h2></div><div class="card-b" style="overflow-x:auto">';
+  if(tAtt.length===0)h+='<div class="empty"><div class="ic">📅</div><p>No attendance marked today</p></div>';
+  else{
+    h+='<table><thead><tr><th>Student</th><th>Course</th><th>Status</th></tr></thead><tbody>';
+    tAtt.forEach(function(a){var s=stu.find(function(x){return x.id===a.sid});h+='<tr><td>'+(s?s.name:a.sid)+'</td><td>'+(s?s.cou:'-')+'</td><td><span class="badge '+(a.status==='Present'?'b-ok':a.status==='Absent'?'b-no':'b-wn')+'">'+a.status+'</span></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function markAtt(){
+  var stu=DB.get('students');if(!stu.length){toast('No students!',true);return}
+  var today=new Date().toLocaleDateString();
+  var h='<p style="margin-bottom:10px"><b>📅 Date:</b> '+today+'</p>';
+  h+='<button class="btn btn-ok btn-sm" style="margin-bottom:10px" onclick="document.querySelectorAll(\'.as\').forEach(function(s){s.value=\'Present\'})">✅ Mark All Present</button>';
+  stu.forEach(function(s){h+='<div style="display:flex;justify-content:space-between;align-items:center;padding:7px;border-bottom:1px solid var(--bd)"><span>👤 <b>'+s.name+'</b> <span style="font-size:10px;color:var(--tl)">('+s.id+')</span></span><select class="fc as" id="att_'+s.id+'" style="width:100px"><option>Present</option><option>Absent</option><option>Late</option><option>Leave</option></select></div>'});
+  h+='<button class="btn-p" style="margin-top:10px" onclick="saveAtt()">💾 Save Attendance</button>';
+  openModal('📅 Mark Attendance',h);
+}
+function saveAtt(){
+  var stu=DB.get('students'),today=new Date().toLocaleDateString();
+  var att=DB.get('attendance').filter(function(a){return a.date!==today});
+  stu.forEach(function(s){att.push({sid:s.id,name:s.name,date:today,status:document.getElementById('att_'+s.id).value})});
+  DB.set('attendance',att);addLog('Attendance Marked','Date:'+today);closeModal();toast('✅ Attendance saved!');renderAdminAttendance();
+}
+
+function renderAdminExams(){
+  var ex=DB.get('exams');
+  var h='<h2 style="margin-bottom:12px">📝 Exams</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddExam()">➕ Create Exam</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(ex.length===0)h+='<div class="empty"><div class="ic">📝</div><p>No exams yet</p></div>';
+  else{
+    h+='<table><thead><tr><th>Name</th><th>Course</th><th>Date</th><th>Marks</th><th>Actions</th></tr></thead><tbody>';
+    ex.forEach(function(e){h+='<tr><td>'+e.name+'</td><td>'+e.cou+'</td><td>'+e.date+'</td><td>'+e.tm+'</td><td><button class="btn btn-no btn-sm" onclick="delExam(\''+e.id+'\')">🗑️</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddExam(){
+  var cou=DB.get('courses'),opts='';cou.forEach(function(c){opts+='<option value="'+c.name+'">'+c.name+'</option>'});
+  var h='<div class="fg"><label>📋 Exam Name *</label><input type="text" id="exName" class="fc"></div>';
+  h+='<div class="frow"><div class="fg"><label>📚 Course</label><select id="exCou" class="fc">'+opts+'</select></div>';
+  h+='<div class="fg"><label>📅 Date</label><input type="date" id="exDate" class="fc" value="'+new Date().toISOString().split('T')[0]+'"></div></div>';
+  h+='<div class="fg"><label> Total Marks</label><input type="number" id="exMarks" class="fc" value="100"></div>';
+  h+='<button class="btn-p" onclick="saveExam()">💾 Save</button>';
+  openModal('➕ Create Exam',h);
+}
+function saveExam(){
+  var n=document.getElementById('exName').value.trim();if(!n){toast('Fill name!',true);return}
+  var ex=DB.get('exams');ex.push({id:'E'+Date.now(),name:n,cou:document.getElementById('exCou').value,date:document.getElementById('exDate').value,tm:+document.getElementById('exMarks').value});
+  DB.set('exams',ex);addLog('Exam Created','Name:'+n);closeModal();toast('✅ Exam created!');renderAdminExams();
+}
+function delExam(id){if(!confirm('Delete?'))return;DB.set('exams',DB.get('exams').filter(function(e){return e.id!==id}));toast('🗑️ Deleted');renderAdminExams()}
+
+function renderAdminTimetable(){
+  var tt=DB.get('timetable'),days=['Mon','Tue','Wed','Thu','Fri'],times=['9-10','10-11','11-12','2-3','3-4'];
+  var h='<h2 style="margin-bottom:12px">🗓️ Timetable</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddTimetable()">➕ Add Class</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(tt.length===0)h+='<div class="empty"><div class="ic">️</div><p>No classes scheduled</p></div>';
+  else{
+    h+='<div class="tt-grid"><div class="tt-cell header">Time</div>';
+    days.forEach(function(d){h+='<div class="tt-cell header">'+d+'</div>'});
+    times.forEach(function(t){
+      h+='<div class="tt-cell time">'+t+'</div>';
+      days.forEach(function(d){
+        var cls=tt.find(function(x){return x.day===d&&x.time===t});
+        h+='<div class="tt-cell">'+(cls?cls.course+'<br><small>'+cls.teacher+'</small>':'-')+'</div>';
+      });
+    });
+    h+='</div>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddTimetable(){
+  var cou=DB.get('courses'),opts='';cou.forEach(function(c){opts+='<option value="'+c.name+'">'+c.name+'</option>'});
+  var h='<div class="fg"><label> Course</label><select id="ttCou" class="fc">'+opts+'</select></div>';
+  h+='<div class="fg"><label>👨‍🏫 Teacher</label><input type="text" id="ttTeach" class="fc"></div>';
+  h+='<div class="frow"><div class="fg"><label>📅 Day</label><select id="ttDay" class="fc"><option>Mon</option><option>Tue</option><option>Wed</option><option>Thu</option><option>Fri</option></select></div>';
+  h+='<div class="fg"><label>🕐 Time</label><select id="ttTime" class="fc"><option>9-10</option><option>10-11</option><option>11-12</option><option>2-3</option><option>3-4</option></select></div></div>';
+  h+='<button class="btn-p" onclick="saveTimetable()">💾 Save</button>';
+  openModal('➕ Add Class',h);
+}
+function saveTimetable(){
+  var tt=DB.get('timetable');tt.push({course:document.getElementById('ttCou').value,teacher:document.getElementById('ttTeach').value.trim(),day:document.getElementById('ttDay').value,time:document.getElementById('ttTime').value});
+  DB.set('timetable',tt);addLog('Timetable Added');closeModal();toast('✅ Class added!');renderAdminTimetable();
+}
+
+function renderAdminFees(){
+  var fee=DB.get('fees'),tot=fee.reduce(function(s,f){return s+f.amt},0);
+  var h='<h2 style="margin-bottom:12px">💰 Fee Collection</h2>';
+  h+='<div class="stats" style="margin-bottom:12px"><div class="stat green"><h3>Total</h3><div class="v">₹'+tot.toLocaleString()+'</div></div><div class="stat"><h3>Transactions</h3><div class="v">'+fee.length+'</div></div></div>';
+  h+='<button class="btn btn-ok" style="margin-bottom:12px" onclick="openCollectFee()">💵 Collect Fee</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(fee.length===0)h+='<div class="empty"><div class="ic">💰</div><p>No transactions</p></div>';
+  else{
+    h+='<table><thead><tr><th>Date</th><th>Student</th><th>Amount</th><th>Mode</th><th>Actions</th></tr></thead><tbody>';
+    fee.slice().reverse().forEach(function(f){h+='<tr><td>'+f.date+'</td><td>'+f.name+'</td><td>₹'+f.amt+'</td><td>'+f.mode+'</td><td><button class="btn btn-p btn-sm" onclick="printReceipt(\''+f.id+'\')">🧾</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openCollectFee(){
+  var stu=DB.get('students').filter(function(s){return s.pen>0});if(!stu.length){toast('No pending fees!',true);return}
+  var opts='';stu.forEach(function(s){opts+='<option value="'+s.id+'" data-pend="'+s.pen+'">'+s.name+' (₹'+s.pen+')</option>'});
+  var h='<div class="fg"><label>👤 Student</label><select id="payStu" class="fc" onchange="document.getElementById(\'payAmt\').value=this.options[this.selectedIndex].dataset.pend">'+opts+'</select></div>';
+  h+='<div class="frow"><div class="fg"><label>💰 Amount</label><input type="number" id="payAmt" class="fc"></div>';
+  h+='<div class="fg"><label>💳 Mode</label><select id="payMode" class="fc"><option>Cash</option><option>UPI</option><option>Card</option><option>Cheque</option></select></div></div>';
+  h+='<button class="btn-p" onclick="processPayment()">💰 Collect</button>';
+  openModal('💵 Collect Fee',h);
+}
+function processPayment(){
+  var id=document.getElementById('payStu').value,amt=+document.getElementById('payAmt').value,mode=document.getElementById('payMode').value;
+  if(!id||!amt){toast('Fill required!',true);return}
+  var stu=DB.get('students'),i=stu.findIndex(function(s){return s.id===id});
+  if(i>-1){
+    stu[i].paid+=amt;stu[i].pen-=amt;DB.set('students',stu);
+    var fee=DB.get('fees'),fid='F'+Date.now();
+    fee.push({id:fid,sid:id,name:stu[i].name,amt:amt,mode:mode,date:new Date().toLocaleDateString()});
+    DB.set('fees',fee);addLog('Fee Collected','₹'+amt+' from '+stu[i].name);
+    closeModal();toast('✅ ₹'+amt+' collected!');renderAdminFees();
+  }
+}
+function printReceipt(fid){
+  var f=DB.get('fees').find(function(x){return x.id===fid});if(!f)return;
+  var inst=DB.getO('settings');
+  var h='<div class="receipt">';
+  h+='<h3>🎓 '+(inst.name||'Institute')+'</h3>';
+  h+='<p style="text-align:center;font-size:10px;color:var(--tl)">'+(inst.address||'')+' • '+(inst.phone||'')+'</p>';
+  h+='<hr style="margin:8px 0">';
+  h+='<h4 style="text-align:center;margin-bottom:8px">FEE RECEIPT</h4>';
+  h+='<div class="row"><span>Receipt No:</span><span><b>'+f.id+'</b></span></div>';
+  h+='<div class="row"><span>Date:</span><span>'+f.date+'</span></div>';
+  h+='<div class="row"><span>Student:</span><span>'+f.name+'</span></div>';
+  h+='<div class="row"><span>Student ID:</span><span>'+f.sid+'</span></div>';
+  h+='<div class="row"><span>Payment Mode:</span><span>'+f.mode+'</span></div>';
+  h+='<div class="row total"><span>Amount Paid:</span><span>₹'+f.amt+'</span></div>';
+  h+='<hr style="margin:8px 0">';
+  h+='<p style="text-align:center;font-size:10px">Thank you for your payment!</p>';
+  h+='<button class="btn-p" style="margin-top:8px" onclick="window.print()">🖨️ Print</button>';
+  h+='</div>';
+  openModal('🧾 Fee Receipt',h);
+}
+
+function renderAdminExpenses(){
+  var exp=DB.get('expenses'),tot=exp.reduce(function(s,e){return s+e.amt},0);
+  var h='<h2 style="margin-bottom:12px">📉 Expenses</h2>';
+  h+='<div class="stats" style="margin-bottom:12px"><div class="stat red"><h3>Total</h3><div class="v">₹'+tot.toLocaleString()+'</div></div></div>';
+  h+='<button class="btn btn-no" style="margin-bottom:12px" onclick="openAddExp()">➕ Add Expense</button>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(exp.length===0)h+='<div class="empty"><div class="ic"></div><p>No expenses</p></div>';
+  else{
+    h+='<table><thead><tr><th>Date</th><th>Category</th><th>Description</th><th>Amount</th><th>Actions</th></tr></thead><tbody>';
+    exp.forEach(function(e){h+='<tr><td>'+e.date+'</td><td>'+e.cat+'</td><td>'+e.desc+'</td><td>₹'+e.amt+'</td><td><button class="btn btn-no btn-sm" onclick="delExp(\''+e.id+'\')">️</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddExp(){
+  var h='<div class="fg"><label>📂 Category</label><select id="expCat" class="fc"><option>⚡ Electricity</option><option>🏠 Rent</option><option>💰 Salary</option><option>🔧 Maintenance</option><option>📦 Other</option></select></div>';
+  h+='<div class="fg"><label>📝 Description</label><input type="text" id="expDesc" class="fc"></div>';
+  h+='<div class="fg"><label>💰 Amount *</label><input type="number" id="expAmt" class="fc"></div>';
+  h+='<button class="btn-p" onclick="saveExp()">💾 Save</button>';
+  openModal(' Add Expense',h);
+}
+function saveExp(){var amt=+document.getElementById('expAmt').value;if(!amt){toast('Enter amount!',true);return}var exp=DB.get('expenses');exp.push({id:'X'+Date.now(),cat:document.getElementById('expCat').value,desc:document.getElementById('expDesc').value,amt:amt,date:new Date().toLocaleDateString()});DB.set('expenses',exp);addLog('Expense Added','₹'+amt);closeModal();toast('✅ Expense added!');renderAdminExpenses()}
+function delExp(id){if(!confirm('Delete?'))return;DB.set('expenses',DB.get('expenses').filter(function(e){return e.id!==id}));toast('🗑️ Deleted');renderAdminExpenses()}
+
+function renderAdminLibrary(){
+  var lib=DB.get('library');
+  var h='<h2 style="margin-bottom:12px">📚 Library</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddBook()">➕ Add Book</button>';
+  h+='<div class="card"><div class="card-b">';
+  if(lib.length===0)h+='<div class="empty"><div class="ic">📖</div><p>No books yet</p></div>';
+  else{
+    lib.forEach(function(b){
+      h+='<div class="book-item"><div class="book-icon"></div><div class="book-info"><h4>'+b.title+'</h4><p>Author: '+b.author+' • ISBN: '+b.isbn+'</p><p>Status: '+(b.available?'<span class="badge b-ok">Available</span>':'<span class="badge b-no">Issued to '+b.issuedTo+'</span>')+'</p></div>';
+      if(b.available)h+='<button class="btn btn-wn btn-sm" onclick="issueBook(\''+b.id+'\')">Issue</button>';
+      else h+='<button class="btn btn-ok btn-sm" onclick="returnBook(\''+b.id+'\')">Return</button>';
+      h+='<button class="btn btn-no btn-sm" onclick="delBook(\''+b.id+'\')">️</button></div>';
+    });
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddBook(){var h='<div class="fg"><label>📖 Title *</label><input type="text" id="bkTitle" class="fc"></div>';h+='<div class="frow"><div class="fg"><label>✍️ Author</label><input type="text" id="bkAuthor" class="fc"></div>';h+='<div class="fg"><label>🔢 ISBN</label><input type="text" id="bkIsbn" class="fc"></div></div>';h+='<button class="btn-p" onclick="saveBook()">💾 Save</button>';openModal('➕ Add Book',h)}
+function saveBook(){var t=document.getElementById('bkTitle').value.trim();if(!t){toast('Fill title!',true);return}var lib=DB.get('library');lib.push({id:'B'+(lib.length+1),title:t,author:document.getElementById('bkAuthor').value.trim(),isbn:document.getElementById('bkIsbn').value.trim(),available:true,issuedTo:'',issueDate:''});DB.set('library',lib);addLog('Book Added',t);closeModal();toast('✅ Book added!');renderAdminLibrary()}
+function issueBook(id){var name=prompt('Enter student name:');if(!name)return;var lib=DB.get('library'),i=lib.findIndex(function(x){return x.id===id});if(i>-1){lib[i].available=false;lib[i].issuedTo=name;lib[i].issueDate=new Date().toLocaleDateString();DB.set('library',lib);addLog('Book Issued',name);toast('✅ Issued to '+name);renderAdminLibrary()}}
+function returnBook(id){var lib=DB.get('library'),i=lib.findIndex(function(x){return x.id===id});if(i>-1){lib[i].available=true;lib[i].issuedTo='';lib[i].issueDate='';DB.set('library',lib);addLog('Book Returned');toast('✅ Book returned');renderAdminLibrary()}}
+function delBook(id){if(!confirm('Delete?'))return;DB.set('library',DB.get('library').filter(function(b){return b.id!==id}));toast('️ Deleted');renderAdminLibrary()}
+
+function renderAdminNotices(){
+  var notices=DB.get('notices');
+  var h='<h2 style="margin-bottom:12px">📢 Notice Board</h2>';
+  h+='<button class="btn btn-p" style="margin-bottom:12px" onclick="openAddNotice()">➕ Add Notice</button>';
+  h+='<div class="card"><div class="card-b">';
+  if(notices.length===0)h+='<div class="empty"><div class="ic">📢</div><p>No notices</p></div>';
+  else{notices.forEach(function(n){h+='<div class="notice-item '+(n.urgent?'urgent':'')+'"><h4>'+(n.urgent?' ':'📌 ')+n.title+'</h4><p>'+n.content+'</p><p style="font-size:9px;margin-top:4px">'+n.date+' • '+(n.urgent?'URGENT':'Normal')+'</p><button class="btn btn-no btn-sm" style="margin-top:4px" onclick="delNotice(\''+n.id+'\')">🗑️ Delete</button></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function openAddNotice(){var h='<div class="fg"><label>📌 Title *</label><input type="text" id="ntTitle" class="fc"></div>';h+='<div class="fg"><label>📝 Content *</label><textarea id="ntContent" class="fc" rows="3"></textarea></div>';h+='<div class="fg"><label style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="ntUrgent"> 🚨 Mark as Urgent</label></div>';h+='<button class="btn-p" onclick="saveNotice()">💾 Save</button>';openModal('➕ Add Notice',h)}
+function saveNotice(){var t=document.getElementById('ntTitle').value.trim(),c=document.getElementById('ntContent').value.trim();if(!t||!c){toast('Fill all!',true);return}var notices=DB.get('notices');notices.unshift({id:'N'+Date.now(),title:t,content:c,urgent:document.getElementById('ntUrgent').checked,date:new Date().toLocaleDateString()});DB.set('notices',notices);addLog('Notice Added',t);closeModal();toast('✅ Notice added!');renderAdminNotices()}
+function delNotice(id){if(!confirm('Delete?'))return;DB.set('notices',DB.get('notices').filter(function(n){return n.id!==id}));toast('️ Deleted');renderAdminNotices()}
+
+function renderAdminAlerts(){
+  var stu=DB.get('students');
+  var h='<h2 style="margin-bottom:12px">🔔 Send Alert</h2>';
+  h+='<div class="card"><div class="card-b">';
+  h+='<div class="fg"><label>👤 Student</label><select id="alertStu" class="fc"><option value="">Select Student</option>';
+  stu.forEach(function(s){h+='<option value="'+s.id+'">'+s.name+' ('+s.id+')</option>'});
+  h+='</select></div>';
+  h+='<div class="fg"><label>🔔 Alert Type</label><select id="alertType" class="fc"><option value="fee">💰 Fee Reminder</option><option value="attendance">📅 Attendance</option><option value="exam">📝 Exam</option><option value="general">📢 General</option></select></div>';
+  h+='<div class="fg"><label>💬 Message</label><textarea id="alertMsg" class="fc" rows="3"></textarea></div>';
+  h+='<button class="btn-p" onclick="sendAlert()">📤 Send Alert</button>';
+  h+='</div></div>';
+  h+='<div class="card" style="margin-top:12px"><div class="card-h"><h2>📋 Alert History</h2></div><div class="card-b">';
+  var alerts=DB.get('notifications');
+  if(alerts.length===0)h+='<p style="text-align:center;color:var(--tl)">No alerts sent</p>';
+  else{alerts.slice().reverse().forEach(function(a){h+='<div class="notice-item"><h4>'+a.type+': '+a.student+'</h4><p>'+a.msg+'</p><p style="font-size:9px">'+a.time+'</p></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function sendAlert(){
+  var sid=document.getElementById('alertStu').value,type=document.getElementById('alertType').value,msg=document.getElementById('alertMsg').value;
+  if(!sid||!msg){toast('Fill all!',true);return}
+  var stu=DB.get('students'),s=stu.find(function(x){return x.id===sid});
+  var notifs=DB.get('notifications');notifs.unshift({type:type,student:s.name,msg:msg,time:new Date().toLocaleString(),mob:s.fatherMob||s.mob});
+  DB.set('notifications',notifs);addLog('Alert Sent','To:'+s.name);
+  if(s.fatherMob)window.open('sms:'+s.fatherMob+'?body='+encodeURIComponent(msg),'_blank');
+  toast('✅ Alert sent!');renderAdminAlerts();
+}
+
+function renderAdminIdCards(){
+  var stu=DB.get('students'),inst=DB.getO('settings');
+  var h='<h2 style="margin-bottom:12px"> Student ID Cards</h2>';
+  h+='<div class="card"><div class="card-b">';
+  if(stu.length===0)h+='<div class="empty"><div class="ic"></div><p>No students</p></div>';
+  else{
+    h+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px">';
+    stu.forEach(function(s){
+      h+='<div class="id-card">';
+      h+='<div style="font-size:13px;margin-bottom:6px"> '+(inst.name||'Institute')+'</div>';
+      h+='<div class="photo">'+s.name.charAt(0).toUpperCase()+'</div>';
+      h+='<h3>'+s.name+'</h3>';
+      h+='<p>ID: '+s.id+'</p>';
+      h+='<div class="details">';
+      h+='<div>📚 Course: '+s.cou+'</div>';
+      h+='<div>📱 Mobile: '+s.mob+'</div>';
+      h+='<div>🕐 Batch: '+(s.batch||'-')+'</div>';
+      h+='<div>📅 Joined: '+s.date+'</div>';
+      h+='</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+
+function renderAdminReceipts(){
+  var fee=DB.get('fees');
+  var h='<h2 style="margin-bottom:12px">🧾 Fee Receipts</h2>';
+  h+='<div class="card"><div class="card-b">';
+  if(fee.length===0)h+='<div class="empty"><div class="ic">🧾</div><p>No receipts</p></div>';
+  else{
+    h+='<table><thead><tr><th>Receipt #</th><th>Date</th><th>Student</th><th>Amount</th><th>Action</th></tr></thead><tbody>';
+    fee.forEach(function(f){h+='<tr><td>'+f.id+'</td><td>'+f.date+'</td><td>'+f.name+'</td><td>'+f.amt+'</td><td><button class="btn btn-p btn-sm" onclick="printReceipt(\''+f.id+'\')">🖨️ Print</button></td></tr>'});
+    h+='</tbody></table>';
+  }
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+
+function renderAdminCertificates(){
+  var stu=DB.get('students').filter(function(s){return s.pen===0}),inst=DB.getO('settings');
+  var h='<h2 style="margin-bottom:12px">🎓 Certificates</h2>';
+  h+='<p style="margin-bottom:12px;color:var(--tl);font-size:12px">Only for students with completed fees</p>';
+  h+='<div class="card"><div class="card-b">';
+  if(stu.length===0)h+='<div class="empty"><div class="ic">🎓</div><p>No eligible students</p></div>';
+  else{stu.forEach(function(s){h+='<div style="margin-bottom:10px;padding:12px;background:var(--bg);border-radius:7px"><div style="display:flex;justify-content:space-between;align-items:center"><div><b>'+s.name+'</b> ('+s.id+') - '+s.cou+'</div><button class="btn btn-p btn-sm" onclick="genCertificate(\''+s.id+'\')">🎓 Generate</button></div></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function genCertificate(sid){
+  var s=DB.get('students').find(function(x){return x.id===sid});if(!s)return;
+  var inst=DB.getO('settings');
+  var h='<div class="certificate">';
+  h+='<h2>🎓 CERTIFICATE OF COMPLETION</h2>';
+  h+='<p style="margin:12px 0">This is to certify that</p>';
+  h+='<div class="name">'+s.name+'</div>';
+  h+='<p>has successfully completed the course</p>';
+  h+='<h3 style="color:var(--p);margin:8px 0">'+s.cou+'</h3>';
+  h+='<p>at <b>'+(inst.name||'Our Institute')+'</b></p>';
+  h+='<p>Date: '+new Date().toLocaleDateString()+'</p>';
+  h+='<p style="margin-top:15px">_____________________<br>Director Signature</p>';
+  h+='<button class="btn-p" style="margin-top:12px" onclick="window.print()">️ Print Certificate</button>';
+  h+='</div>';
+  openModal(' Certificate',h);
+}
+
+function renderAdminReports(){
+  var stu=DB.get('students'),fee=DB.get('fees'),exp=DB.get('expenses'),cou=DB.get('courses');
+  var totFee=fee.reduce(function(s,f){return s+f.amt},0),totExp=exp.reduce(function(s,e){return s+e.amt},0),pend=stu.reduce(function(s,x){return s+(x.pen||0)},0);
+  var h='<h2 style="margin-bottom:12px">📈 Reports & Analytics</h2>';
+  h+='<div class="stats">';
+  h+='<div class="stat"><h3>‍🎓 Students</h3><div class="v">'+stu.length+'</div></div>';
+  h+='<div class="stat green"><h3>💰 Income</h3><div class="v">₹'+totFee.toLocaleString()+'</div></div>';
+  h+='<div class="stat red"><h3>📉 Expenses</h3><div class="v">₹'+totExp.toLocaleString()+'</div></div>';
+  h+='<div class="stat '+(totFee-totExp>=0?'green':'red')+'"><h3> Profit</h3><div class="v">'+(totFee-totExp).toLocaleString()+'</div></div>';
+  h+='<div class="stat orange"><h3>⏳ Pending</h3><div class="v">₹'+pend.toLocaleString()+'</div></div>';
+  h+='<div class="stat purple"><h3>📚 Courses</h3><div class="v">'+cou.length+'</div></div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-h"><h2>📊 Course-wise Distribution</h2></div><div class="card-b">';
+  cou.forEach(function(c){var n=stu.filter(function(s){return s.cou===c.name}).length;var pct=stu.length?Math.round(n/stu.length*100):0;h+='<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;margin-bottom:3px"><span><b>'+c.name+'</b></span><span style="font-size:11px;color:var(--tl)">'+n+' students ('+pct+'%)</span></div><div style="background:var(--bg);height:7px;border-radius:3px;overflow:hidden"><div style="background:var(--p);height:100%;width:'+pct+'%"></div></div></div>'});
+  h+='</div></div>';
+  h+='<div class="card"><div class="card-h"><h2>💰 Fee Status</h2></div><div class="card-b">';
+  var paid=stu.filter(function(s){return s.pen===0}).length,partial=stu.filter(function(s){return s.pen>0&&s.paid>0}).length,unpaid=stu.filter(function(s){return s.paid===0}).length;
+  h+='<div style="margin-bottom:6px"><span class="badge b-ok">✅ Fully Paid: '+paid+'</span></div>';
+  h+='<div style="margin-bottom:6px"><span class="badge b-wn">⚠️ Partial: '+partial+'</span></div>';
+  h+='<div><span class="badge b-no">❌ Unpaid: '+unpaid+'</span></div>';
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+
+function renderAdminLogs(){
+  var logs=DB.get('logs');
+  var h='<h2 style="margin-bottom:12px"> Audit Logs</h2>';
+  h+='<div class="card"><div class="card-b">';
+  if(logs.length===0)h+='<div class="empty"><div class="ic"></div><p>No logs</p></div>';
+  else{logs.forEach(function(l){h+='<div class="log-item"><div class="t">'+l.action+'</div><div class="d">'+l.details+' • '+l.time+' • by '+l.user+'</div></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+
+function renderAdminSettings(){
+  var s=DB.getO('settings');
+  var h='<h2 style="margin-bottom:12px">⚙️ Settings</h2>';
+  h+='<div class="card"><div class="card-h"><h2>🏫 Institute Information</h2></div><div class="card-b">';
+  h+='<div class="fg"><label>🏫 Institute Name</label><input type="text" id="sName" class="fc" value="'+(s.name||'')+'"></div>';
+  h+='<div class="fg"><label>📞 Phone</label><input type="text" id="sPhone" class="fc" value="'+(s.phone||'')+'"></div>';
+  h+='<div class="fg"><label>📧 Email</label><input type="email" id="sEmail" class="fc" value="'+(s.email||'')+'"></div>';
+  h+='<div class="fg"><label>📍 Address</label><textarea id="sAddr" class="fc" rows="2">'+(s.address||'')+'</textarea></div>';
+  h+='<button class="btn-p" onclick="saveSettings()">💾 Save Settings</button>';
+  h+='</div></div>';
+  h+='<div class="card"><div class="card-h"><h2 style="color:var(--no)">⚠️ Danger Zone</h2></div><div class="card-b">';
+  h+='<p style="color:var(--tl);font-size:11px;margin-bottom:8px">️ Reset all data. Cannot be undone.</p>';
+  h+='<button class="btn btn-no" onclick="if(confirm(\'Delete ALL data?\')){DB.set(\'students\',[]);DB.set(\'courses\',[]);DB.set(\'fees\',[]);DB.set(\'attendance\',[]);DB.set(\'exams\',[]);DB.set(\'expenses\',[]);DB.set(\'notifications\',[]);DB.set(\'notices\',[]);DB.set(\'library\',[]);DB.set(\'timetable\',[]);DB.set(\'certificates\',[]);DB.set(\'logs\',[]);DB.set(\'staff\',[]);toast(\'✅ All data reset!\');renderAdminDashboard()}">️ Reset All Data</button>';
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function saveSettings(){var s={name:document.getElementById('sName').value.trim(),phone:document.getElementById('sPhone').value.trim(),email:document.getElementById('sEmail').value.trim(),address:document.getElementById('sAddr').value.trim()};DB.setO('settings',s);document.getElementById('instNameDisplay').textContent=s.name||'Institute';addLog('Settings Updated');toast('✅ Settings saved!')}
+
+function renderAdminBackup(){
+  var h='<h2 style="margin-bottom:12px">💾 Backup & Restore</h2>';
+  h+='<div class="card"><div class="card-b">';
+  h+='<h3 style="margin-bottom:8px">📥 Download Backup</h3>';
+  h+='<p style="font-size:11px;color:var(--tl);margin-bottom:8px">Download all your institute data as JSON file</p>';
+  h+='<button class="btn btn-p" onclick="downloadBackup()">💾 Download Backup</button>';
+  h+='<hr style="margin:15px 0">';
+  h+='<h3 style="margin-bottom:8px">📤 Restore Backup</h3>';
+  h+='<p style="font-size:11px;color:var(--tl);margin-bottom:8px">Restore data from backup file</p>';
+  h+='<input type="file" id="restoreFile" accept=".json" onchange="restoreBackup(event)" style="margin-bottom:8px">';
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function downloadBackup(){
+  var data={institute:INST.get().find(function(i){return i.id===currentUser.instId}),students:DB.get('students'),courses:DB.get('courses'),fees:DB.get('fees'),attendance:DB.get('attendance'),exams:DB.get('exams'),expenses:DB.get('expenses'),notifications:DB.get('notifications'),notices:DB.get('notices'),library:DB.get('library'),timetable:DB.get('timetable'),logs:DB.get('logs'),settings:DB.getO('settings'),staff:DB.get('staff'),date:new Date().toISOString()};
+  var blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='chanakya_backup_'+currentUser.instId+'_'+Date.now()+'.json';a.click();
+  toast('✅ Backup downloaded!');
+}
+function restoreBackup(e){
+  var f=e.target.files[0];if(!f)return;
+  var r=new FileReader();
+  r.onload=function(ev){
+    try{
+      var d=JSON.parse(ev.target.result);
+      if(!confirm('This will replace ALL current data. Continue?'))return;
+      if(d.students)DB.set('students',d.students);if(d.courses)DB.set('courses',d.courses);if(d.fees)DB.set('fees',d.fees);if(d.attendance)DB.set('attendance',d.attendance);if(d.exams)DB.set('exams',d.exams);if(d.expenses)DB.set('expenses',d.expenses);if(d.notifications)DB.set('notifications',d.notifications);if(d.notices)DB.set('notices',d.notices);if(d.library)DB.set('library',d.library);if(d.timetable)DB.set('timetable',d.timetable);if(d.logs)DB.set('logs',d.logs);if(d.settings)DB.setO('settings',d.settings);if(d.staff)DB.set('staff',d.staff);
+      addLog('Data Restored','From backup');toast('✅ Data restored!');renderAdminDashboard();
+    }catch(err){toast('❌ Invalid file!',true)}
+  };
+  r.readAsText(f);
+}
+
+/* ============ STUDENT PANEL ============ */
+function renderStudentSidebar(){
+  var h='<div class="nav-sec">🏠 MAIN</div>';
+  h+='<div class="nav-item active" onclick="renderStudentDashboard()"><span class="ic">📊</span>Dashboard</div>';
+  h+='<div class="nav-item" onclick="renderStudentProfile()"><span class="ic">👤</span>My Profile</div>';
+  h+='<div class="nav-sec">🎓 ACADEMIC</div>';
+  h+='<div class="nav-item" onclick="renderStudentAttendance()"><span class="ic">📅</span>My Attendance</div>';
+  h+='<div class="nav-item" onclick="renderStudentExams()"><span class="ic"></span>My Exams</div>';
+  h+='<div class="nav-item" onclick="renderStudentTimetable()"><span class="ic">️</span>Timetable</div>';
+  h+='<div class="nav-sec"> FINANCE</div>';
+  h+='<div class="nav-item" onclick="renderStudentFees()"><span class="ic">💵</span>My Fees</div>';
+  h+='<div class="nav-sec">📚 LIBRARY</div>';
+  h+='<div class="nav-item" onclick="renderStudentLibrary()"><span class="ic"></span>Library</div>';
+  h+='<div class="nav-sec">📢 NOTICES</div>';
+  h+='<div class="nav-item" onclick="renderStudentNotices()"><span class="ic">📢</span>Notices</div>';
+  h+='<div class="nav-sec">🎨 DOWNLOADS</div>';
+  h+='<div class="nav-item" onclick="renderStudentIdCard()"><span class="ic"></span>My ID Card</div>';
+  h+='<div class="nav-sec">⚙️ SYSTEM</div>';
+  h+='<div class="nav-item" onclick="logout()" style="color:var(--no)"><span class="ic">🚪</span>Logout</div>';
+  document.getElementById('sidebar').innerHTML=h;
+}
+function renderStudentDashboard(){
+  var s=DB.get('students').find(function(x){return x.id===currentUser.id})||{};
+  var att=DB.get('attendance').filter(function(a){return a.sid===currentUser.id});
+  var pres=att.filter(function(a){return a.status==='Present'}).length;
+  var attPct=att.length?Math.round(pres/att.length*100):0;
+  var h='<div class="welcome"><h1>👋 Welcome, '+currentUser.name+'!</h1><p>ID: '+currentUser.id+' • '+currentUser.course+'</p></div>';
+  h+='<div class="stats">';
+  h+='<div class="stat"><h3>📚 Course</h3><div class="v" style="font-size:14px">'+currentUser.course+'</div></div>';
+  h+='<div class="stat green"><h3>✅ Attendance</h3><div class="v">'+attPct+'%</div></div>';
+  h+='<div class="stat orange"><h3>💰 Paid</h3><div class="v">₹'+s.paid+'</div></div>';
+  h+='<div class="stat red"><h3>⏳ Pending</h3><div class="v">₹'+s.pen+'</div></div>';
+  h+='</div>';
+  h+='<div class="card"><div class="card-h"><h2>📋 Quick Access</h2></div><div class="card-b"><div class="qgrid">';
+  h+='<div class="qbtn" style="background:var(--p)" onclick="renderStudentProfile()"><div class="ic">👤</div>Profile</div>';
+  h+='<div class="qbtn" style="background:var(--ok)" onclick="renderStudentAttendance()"><div class="ic">📅</div>Attendance</div>';
+  h+='<div class="qbtn" style="background:var(--wn)" onclick="renderStudentFees()"><div class="ic">💵</div>Fees</div>';
+  h+='<div class="qbtn" style="background:var(--no)" onclick="renderStudentNotices()"><div class="ic">📢</div>Notices</div>';
+  h+='</div></div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentProfile(){
+  var s=DB.get('students').find(function(x){return x.id===currentUser.id});
+  var h='<h2 style="margin-bottom:12px">👤 My Profile</h2>';
+  h+='<div class="card"><div class="card-b">';
+  h+='<div style="text-align:center;margin-bottom:12px"><div class="avatar" style="width:70px;height:70px;font-size:28px;margin:0 auto 8px">'+s.name.charAt(0).toUpperCase()+'</div><h3>'+s.name+'</h3><p style="color:var(--tl)">ID: '+s.id+'</p></div>';
+  h+='<div class="fg"><label>📱 Mobile</label><div style="padding:8px;background:var(--bg);border-radius:7px">'+s.mob+'</div></div>';
+  h+='<div class="fg"><label> Father</label><div style="padding:8px;background:var(--bg);border-radius:7px">'+(s.father||'-')+'</div></div>';
+  h+='<div class="fg"><label>📚 Course</label><div style="padding:8px;background:var(--bg);border-radius:7px">'+s.cou+'</div></div>';
+  h+='<div class="fg"><label>🕐 Batch</label><div style="padding:8px;background:var(--bg);border-radius:7px">'+(s.batch||'-')+'</div></div>';
+  h+='<div class="fg"><label>💰 Total Fee</label><div style="padding:8px;background:var(--bg);border-radius:7px">₹'+s.fee+'</div></div>';
+  h+='<div class="fg"><label>✅ Paid</label><div style="padding:8px;background:var(--bg);border-radius:7px">₹'+s.paid+'</div></div>';
+  h+='<div class="fg"><label>⏳ Pending</label><div style="padding:8px;background:var(--bg);border-radius:7px">₹'+s.pen+'</div></div>';
+  h+='<div class="fg"><label> Join Date</label><div style="padding:8px;background:var(--bg);border-radius:7px">'+s.date+'</div></div>';
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentAttendance(){
+  var att=DB.get('attendance').filter(function(a){return a.sid===currentUser.id});
+  var pres=att.filter(function(a){return a.status==='Present'}).length;
+  var pct=att.length?Math.round(pres/att.length*100):0;
+  var h='<h2 style="margin-bottom:12px">📅 My Attendance</h2>';
+  h+='<div class="stats" style="margin-bottom:12px"><div class="stat green"><h3>Present</h3><div class="v">'+pres+'</div></div><div class="stat"><h3>Percentage</h3><div class="v">'+pct+'%</div></div></div>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(att.length===0)h+='<div class="empty"><div class="ic">📅</div><p>No records</p></div>';
+  else{h+='<table><thead><tr><th>Date</th><th>Status</th></tr></thead><tbody>';att.forEach(function(a){h+='<tr><td>'+a.date+'</td><td><span class="badge '+(a.status==='Present'?'b-ok':a.status==='Absent'?'b-no':'b-wn')+'">'+a.status+'</span></td></tr>'});h+='</tbody></table>'}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentExams(){
+  var ex=DB.get('exams');
+  var h='<h2 style="margin-bottom:12px"> My Exams</h2>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(ex.length===0)h+='<div class="empty"><div class="ic">📝</div><p>No exams</p></div>';
+  else{h+='<table><thead><tr><th>Exam</th><th>Course</th><th>Date</th><th>Marks</th></tr></thead><tbody>';ex.forEach(function(e){h+='<tr><td>'+e.name+'</td><td>'+e.cou+'</td><td>'+e.date+'</td><td>'+e.tm+'</td></tr>'});h+='</tbody></table>'}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentTimetable(){
+  var tt=DB.get('timetable');
+  var h='<h2 style="margin-bottom:12px">🗓️ My Timetable</h2>';
+  h+='<div class="card"><div class="card-b" style="overflow-x:auto">';
+  if(tt.length===0)h+='<div class="empty"><div class="ic">🗓️</div><p>No classes scheduled</p></div>';
+  else{h+='<table><thead><tr><th>Day</th><th>Time</th><th>Course</th><th>Teacher</th></tr></thead><tbody>';tt.forEach(function(t){h+='<tr><td>'+t.day+'</td><td>'+t.time+'</td><td>'+t.course+'</td><td>'+t.teacher+'</td></tr>'});h+='</tbody></table>'}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentFees(){
+  var s=DB.get('students').find(function(x){return x.id===currentUser.id});
+  var fee=DB.get('fees').filter(function(f){return f.sid===currentUser.id});
+  var h='<h2 style="margin-bottom:12px">💰 My Fees</h2>';
+  h+='<div class="stats" style="margin-bottom:12px"><div class="stat green"><h3>Paid</h3><div class="v">₹'+s.paid+'</div></div><div class="stat red"><h3>Pending</h3><div class="v">₹'+s.pen+'</div></div></div>';
+  h+='<div class="card"><div class="card-h"><h2>Payment History</h2></div><div class="card-b" style="overflow-x:auto">';
+  if(fee.length===0)h+='<div class="empty"><div class="ic">💰</div><p>No payments</p></div>';
+  else{h+='<table><thead><tr><th>Date</th><th>Amount</th><th>Mode</th><th>Receipt</th></tr></thead><tbody>';fee.forEach(function(f){h+='<tr><td>'+f.date+'</td><td>'+f.amt+'</td><td>'+f.mode+'</td><td><button class="btn btn-p btn-sm" onclick="printReceipt(\''+f.id+'\')">🧾</button></td></tr>'});h+='</tbody></table>'}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentLibrary(){
+  var lib=DB.get('library');
+  var h='<h2 style="margin-bottom:12px">📚 Library Books</h2>';
+  h+='<div class="card"><div class="card-b">';
+  if(lib.length===0)h+='<div class="empty"><div class="ic"></div><p>No books</p></div>';
+  else{lib.forEach(function(b){h+='<div class="book-item"><div class="book-icon"></div><div class="book-info"><h4>'+b.title+'</h4><p>Author: '+b.author+'</p><p>Status: '+(b.available?'<span class="badge b-ok">Available</span>':'<span class="badge b-no">Issued</span>')+'</p></div></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentNotices(){
+  var notices=DB.get('notices');
+  var h='<h2 style="margin-bottom:12px">📢 Notices</h2>';
+  h+='<div class="card"><div class="card-b">';
+  if(notices.length===0)h+='<div class="empty"><div class="ic">📢</div><p>No notices</p></div>';
+  else{notices.forEach(function(n){h+='<div class="notice-item '+(n.urgent?'urgent':'')+'"><h4>'+(n.urgent?' ':'📌 ')+n.title+'</h4><p>'+n.content+'</p><p style="font-size:9px;margin-top:3px">'+n.date+'</p></div>'})}
+  h+='</div></div>';document.getElementById('content').innerHTML=h;
+}
+function renderStudentIdCard(){
+  var s=DB.get('students').find(function(x){return x.id===currentUser.id});
+  var inst=DB.getO('settings');
+  var h='<h2 style="margin-bottom:12px"> My ID Card</h2>';
+  h+='<div class="id-card">';
+  h+='<div style="font-size:13px;margin-bottom:6px">🎓 '+(inst.name||'Institute')+'</div>';
+  h+='<div class="photo">'+s.name.charAt(0).toUpperCase()+'</div>';
+  h+='<h3>'+s.name+'</h3>';
+  h+='<p>ID: '+s.id+'</p>';
+  h+='<div class="details">';
+  h+='<div>📚 Course: '+s.cou+'</div>';
+  h+='<div>📱 Mobile: '+s.mob+'</div>';
+  h+='<div>🕐 Batch: '+(s.batch||'-')+'</div>';
+  h+='<div>📅 Joined: '+s.date+'</div>';
+  h+='</div></div>';
+  h+='<button class="btn-p" style="margin-top:12px;max-width:300px;margin-left:auto;margin-right:auto;display:block" onclick="window.print()">🖨️ Print ID Card</button>';
+  document.getElementById('content').innerHTML=h;
+}
+
+function showNotifs(){
+  var n=DB.get('notifications');var h='';
+  if(n.length===0)h='<div class="empty"><div class="ic"></div><p>No notifications</p></div>';
+  else{n.forEach(function(a){h+='<div class="notice-item"><h4>'+a.type+': '+a.student+'</h4><p>'+a.msg+'</p><p style="font-size:9px">'+a.time+'</p></div>'})}
+  h+='<button class="btn btn-no" style="width:100%;margin-top:8px" onclick="if(confirm(\'Clear all?\')){DB.set(\'notifications\',[]);closeModal();updateNotifCount()}">🗑️ Clear All</button>';
+  openModal('🔔 Notifications ('+n.length+')',h);
+}
+function showProfile(){var h='<div style="text-align:center;margin-bottom:12px"><div class="avatar" style="width:70px;height:70px;font-size:28px;margin:0 auto 8px">'+currentUser.name.charAt(0).toUpperCase()+'</div><h3>'+currentUser.name+'</h3><p style="color:var(--tl)">'+currentUser.role+'</p></div>';openModal('👤 Profile',h)}
+function logout(){if(confirm('Logout?')){currentUser=null;location.reload()}}
+</script>
+</body>
+</html>
