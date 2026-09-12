@@ -1,4 +1,4 @@
-# Chanakya ERP — Streamlit
+# Chanakya Computer Institute — Streamlit
 
 This package wraps the existing `index.html` app in Streamlit so it can be deployed on Streamlit Community Cloud.
 
